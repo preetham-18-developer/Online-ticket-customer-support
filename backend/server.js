@@ -11,47 +11,72 @@ const adminRoutes = require('./routes/adminRoutes');
 const app = express();
 const { db } = require('./config/firebase');
 
-// ✅ Middleware (correct order)
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ✅ TRUST PROXY (IMPORTANT FOR RENDER)
+app.set('trust proxy', 1);
+
+// ✅ CORS CONFIG (FIXED)
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://online-token-frontend.onrender.com' // 🔥 ADD THIS
+];
 
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'http://localhost:5174'
-    ],
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps, postman)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
 }));
 
-app.use(helmet({ crossOriginResourcePolicy: false }));
+// ✅ HANDLE PREFLIGHT REQUESTS
+app.options('*', cors());
 
-// Static
+// ✅ SECURITY
+app.use(helmet({
+    crossOriginResourcePolicy: false
+}));
+
+// ✅ BODY PARSER
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ✅ STATIC FILES
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Rate limiting
+// ✅ RATE LIMIT
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
 });
 app.use(globalLimiter);
 
-// Routes
+// ✅ ROUTES
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Test route
+// ✅ HEALTH CHECK
 app.get('/api/health', (req, res) => {
     res.json({ status: 'UP' });
 });
 
-// Error handler
+// ✅ ERROR HANDLER
 app.use((err, req, res, next) => {
+    console.error(err.message);
     res.status(500).json({ success: false, message: err.message });
 });
 
+// ✅ START SERVER
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
