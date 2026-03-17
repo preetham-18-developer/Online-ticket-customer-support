@@ -41,6 +41,16 @@ function App() {
       <AuthProvider>
         <div className="min-h-[100vh] flex flex-col relative w-full overflow-hidden bg-background-main selection:bg-accent-primary/30 selection:text-white">
           <Routes>
+            {/* Protected Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="tickets" element={<AdminTickets />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="ticket/:id" element={<TicketDetail />} />
+            </Route>
+
             {/* Customer Front-Facing Routes */}
             <Route path="/*" element={
               <UserLayout>
@@ -56,16 +66,6 @@ function App() {
                 </Routes>
               </UserLayout>
             } />
-
-            {/* Protected Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="tickets" element={<AdminTickets />} />
-              <Route path="reports" element={<AdminReports />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route path="ticket/:id" element={<TicketDetail />} />
-            </Route>
 
           </Routes>
         </div>

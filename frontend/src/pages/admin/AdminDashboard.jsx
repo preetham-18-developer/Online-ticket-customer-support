@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HiOutlineTicket, HiOutlineUserGroup, HiOutlineClock, HiOutlineBan } from 'react-icons/hi';
 import api from '../../api/axios';
 
 const AdminDashboard = () => {
+    const navigate = useNavigate();
     const [tickets, setTickets] = useState([]);
     const [stats, setStats] = useState({ total: 0, open: 0, resolved: 0, closed: 0 });
     const [loading, setLoading] = useState(true);
@@ -123,7 +125,7 @@ const AdminDashboard = () => {
                             {tickets.map((ticket) => (
                                 <tr
                                     key={ticket.ticket_id}
-                                    onClick={() => window.location.href = `/admin/ticket/${ticket.ticket_id}`}
+                                    onClick={() => navigate(`/admin/ticket/${ticket.ticket_id}`)}
                                     className="hover:bg-white/5 transition-colors group cursor-pointer"
                                     title="Click to view details & reply"
                                 >

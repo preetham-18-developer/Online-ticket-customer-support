@@ -100,6 +100,8 @@ exports.getTickets = async (req, res, next) => {
 exports.getTicketById = async (req, res, next) => {
     try {
         const { id } = req.params;
+        console.log(`[Debug] Fetching ticket detail for ID: ${id} by user: ${req.user.email} (Role: ${req.user.role})`);
+
         const ticketDoc = await db.collection('Tickets').doc(id).get();
 
         if (!ticketDoc.exists || ticketDoc.data().is_deleted) {

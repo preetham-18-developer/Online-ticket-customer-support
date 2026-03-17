@@ -60,6 +60,13 @@ const globalLimiter = rateLimit({
 app.use(globalLimiter);
 
 // ✅ ROUTES
+// Diagnostic logging for all incoming requests
+app.use((req, res, next) => {
+    console.log(`[Request] ${req.method} ${req.url} from ${req.ip}`);
+    next();
+});
+
+// Prioritize specific API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/admin', adminRoutes);
@@ -79,14 +86,21 @@ app.get('/api/branding', async (req, res) => {
             res.json({ success: true, data: { organizationName: 'TickFlow' } });
         }
     } catch (err) {
+        console.error(`[Error] /api/branding: ${err.message}`); // Diagnostic logging
         res.json({ success: true, data: { organizationName: 'TickFlow' } });
     }
 });
 
 // ✅ ERROR HANDLER
 app.use((err, req, res, next) => {
-    console.error(err.message);
+    console.error(`[Error] ${req.method} ${req.url}: ${err.message}`);
     res.status(500).json({ success: false, message: err.message });
+});
+
+// ✅ 404 HANDLER
+app.use((req, res) => {
+    console.warn(`[404] ${req.method} ${req.url}`);
+    res.status(404).json({ success: false, message: `Endpoint ${req.url} not found` });
 });
 
 // ✅ START SERVER

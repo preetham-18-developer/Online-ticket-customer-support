@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HiOutlineTicket } from 'react-icons/hi';
 import api from '../../api/axios';
 
 const AdminTickets = () => {
+    const navigate = useNavigate();
     const [tickets, setTickets] = useState([]);
     const [filter, setFilter] = useState('All');
     const [loading, setLoading] = useState(true);
@@ -107,7 +109,7 @@ const AdminTickets = () => {
                                 {filteredTickets.map((ticket) => (
                                     <tr
                                         key={ticket.ticket_id}
-                                        onClick={() => window.location.href = `/admin/ticket/${ticket.ticket_id}`}
+                                        onClick={() => navigate(`/admin/ticket/${ticket.ticket_id}`)}
                                         className="hover:bg-white/5 transition-colors group cursor-pointer"
                                     >
                                         <td className="px-6 py-4 text-sm font-medium text-white">#{ticket.ticket_id.substring(0, 8)}...</td>
