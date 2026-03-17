@@ -1,15 +1,17 @@
 import axios from 'axios';
 
 const api = axios.create({
-    // ✅ Use relative path so Nginx handles routing
-    baseURL: import.meta.env.VITE_API_URL || '/api/',
+    baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Request interceptor
+// Attach token automatically
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        if (config.url.startsWith('/')) {
+            config.url = config.url.substring(1);
+        }
 
+        const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

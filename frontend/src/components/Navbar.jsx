@@ -24,9 +24,7 @@ const Navbar = () => {
             <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     <Link to="/" className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20">
-                            <span className="text-white font-poppins font-bold text-xl">{organizationName.charAt(0)}</span>
-                        </div>
+                        <img src="/logo.png" alt="Tick Flow Logo" className="w-10 h-10 object-contain rounded-lg" />
                         <span className="text-white font-poppins font-semibold text-xl tracking-tight">{organizationName}</span>
                     </Link>
 
