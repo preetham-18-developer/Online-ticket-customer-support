@@ -37,8 +37,7 @@ app.use(cors({
     credentials: true,
 }));
 
-// ✅ HANDLE PREFLIGHT REQUESTS
-app.options('*', cors());
+// ✅ PREFLIGHT HANDLED BY GLOBAL CORS MIDDLEWARE ABOVE
 
 // ✅ SECURITY
 app.use(helmet({
@@ -68,6 +67,20 @@ app.use('/api/admin', adminRoutes);
 // ✅ HEALTH CHECK
 app.get('/api/health', (req, res) => {
     res.json({ status: 'UP' });
+});
+
+// ✅ PUBLIC BRANDING
+app.get('/api/branding', async (req, res) => {
+    try {
+        const doc = await db.collection('Settings').doc('platform').get();
+        if (doc.exists) {
+            res.json({ success: true, data: doc.data() });
+        } else {
+            res.json({ success: true, data: { organizationName: 'TickFlow' } });
+        }
+    } catch (err) {
+        res.json({ success: true, data: { organizationName: 'TickFlow' } });
+    }
 });
 
 // ✅ ERROR HANDLER
